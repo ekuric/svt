@@ -7,6 +7,16 @@ RUN curl -O --location https://github.com/brianfrankcooper/YCSB/releases/downloa
 RUN tar xfz ycsb-${ycsb_version}.tar.gz
 RUN mv ycsb-${ycsb_version} ycsb
 
+RUN curl -o ycsb/workloads/workloada https://raw.githubusercontent.com/ekuric/YCSB/ycsb_tests/workloads/workloada
+RUN curl -o ycsb/workloads/workloadb https://raw.githubusercontent.com/ekuric/YCSB/ycsb_tests/workloads/workloadb
+RUN curl -o ycsb/workloads/workloadc https://raw.githubusercontent.com/ekuric/YCSB/ycsb_tests/workloads/workloadc
+
+RUN curl -o ycsb/workloads/workloadd https://raw.githubusercontent.com/ekuric/YCSB/ycsb_tests/workloads/workloadd
+RUN curl -o ycsb/workloads/workloade https://raw.githubusercontent.com/ekuric/YCSB/ycsb_tests/workloads/workloade
+RUN curl -o ycsb/workloads/workloadf https://raw.githubusercontent.com/ekuric/YCSB/ycsb_tests/workloads/workloadf
+
+
+
 WORKDIR /ycsb
 
 RUN echo "hanging there ..." > fake.log
