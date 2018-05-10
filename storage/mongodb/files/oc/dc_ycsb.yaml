@@ -10,7 +10,8 @@ spec:
     spec:
       containers:
         - name: "ycsb"
-          image: "docker.io/hongkailiu/ycsb:002"
+          image: "docker.io/elvirkuric/ycsb:latest"
+          #docker.io/hongkailiu/ycsb:002"
   triggers:
     - type: "ConfigChange"
   replicas: 1
