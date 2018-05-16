@@ -7,5 +7,5 @@ WORKLOAD="${4}"
 ITERATIONS="${5}"
 
 for memory_limit in $(echo ${MEMORY_LIMIT} | sed -e s/,/" "/g); do
-	ansible-playbook -i "${JUMP_HOST}," mongodb-test.yaml --extra-vars "MEMORY_LIMIT=${memory_limit} ycsb_threads=${ycsb_threads} worklaod=${WORKLOAD} iteration=${ITERATIONS}"
+	ansible-playbook -i "${JUMP_HOST}," mongodb-test.yaml --extra-vars "MEMORY_LIMIT=${memory_limit} ycsb_threads=${ycsb_threads} workload=${WORKLOAD} iteration=${ITERATIONS}"
 done 
