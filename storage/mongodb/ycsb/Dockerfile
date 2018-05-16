@@ -14,6 +14,7 @@ RUN curl -o ycsb/workloads/workloadc https://raw.githubusercontent.com/ekuric/YC
 RUN curl -o ycsb/workloads/workloadd https://raw.githubusercontent.com/ekuric/YCSB/ycsb_tests/workloads/workloadd
 RUN curl -o ycsb/workloads/workloade https://raw.githubusercontent.com/ekuric/YCSB/ycsb_tests/workloads/workloade
 RUN curl -o ycsb/workloads/workloadf https://raw.githubusercontent.com/ekuric/YCSB/ycsb_tests/workloads/workloadf
+RUN curl -o ycsb/workloads/workload_template https://raw.githubusercontent.com/ekuric/YCSB/ycsb_tests/workloads/workload_template 
 
 
 
