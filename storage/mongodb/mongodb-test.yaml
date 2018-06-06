@@ -41,10 +41,10 @@
 
   - block:
       - name: delete project
-        shell: oc delete project {{ test_project_name }}
+        shell: oc delete project --config=/root/.kube/config {{ test_project_name }}
         ignore_errors: True
       - name: wait until the project is gone
-        shell: oc get project {{ test_project_name }}
+        shell: oc get project --config=/root/.kube/config {{ test_project_name }}
         register: get_project_result
         until: get_project_result.stderr.find(" not found") != -1
         retries: 30 
