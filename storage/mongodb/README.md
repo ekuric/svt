@@ -75,7 +75,7 @@ $ ./runmongo.sh memory_limit ycsb_threads jump_host workload iterations recordco
 For example if we execute below 
 
 ```
-$ ./runmongo.sh 1024 10,20 jump_host_hostname workloada,workloadb 10 1000 1000 gluster-storage 10Gi 
+$ ./runmongo.sh 1024 10,20 jump_host_hostname workloada,workloadb 10 1000 1000 gluster-storage 10
 ``` 
 This will allocate **1024Mi** RAM for MongoDB, run YCSB with 10,20 threads, execute **workloada** and **workloadb**, run 10 iterations with 
 **recordcount=1000** , **operationcount=1000** using storageclass with name **gluster-storage** to allocated storage for MongoDB pod and size of PVC volume will be **10Gi** 
@@ -94,6 +94,3 @@ Last command will execute YCSB test against MongoDB pod for various combination
 
 **Important:** If **operationcount** and **recordcount** are hight, then in order for test to work it is necessary to 
 start test with bigger PVC size. 
-
-
-
