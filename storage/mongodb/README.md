@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-On the host to run the test install below packages 
+On the host to run the test install below packages prior starting test 
 
 ```
 # yum install -y ansible pbench-agent 
@@ -36,7 +36,7 @@ machine outside of OCP cluster or OCP master machine. For case when it is machin
 If authentication is required against the master node, then update the following command accordingly.
 
 ```sh
-$ ansible-playbook -i "ec2-34-215-170-11.us-west-2.compute.amazonaws.com," storage/mongodb/mongodb-test.yaml --extra-vars "ansible_user=root ansible_ssh_private_key_file=/home/hongkliu/.ssh/id_rsa_perf"
+$ ansible-playbook -i "<jump_hostname>," storage/mongodb/mongodb-test.yaml --extra-vars "ansible_user=root ansible_ssh_private_key_file=/path/to/key/file"
 ```
 
 Other params in [external_vars.yaml](external_vars.yaml) can be overridden in the same way.
