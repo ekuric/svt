@@ -50,7 +50,7 @@ done
 # draw result 
 
 # get script 
-curl -o ${output_dir}/drawresults.py https://raw.githubusercontent.com/ekuric/openshift/master/postgresql/drawresults.py 
-for load  in $(echo ${WORKLOAD} | sed -e s/,/" "/g); do
-	python ${output_dir}/drawresults.py -r ${output_dir}/result_${load}_recordcount_${RECORDCOUNT}_operationcount_${OPERATIONCOUNT}.csv -i ff -o ${output_dir}/ycsb_${load}_recordcount_${RECORDCOUNT}_operationcount_${OPERATIONCOUNT} -t "${load} - recordcount=${RECORDCOUNT} operationcount=${OPERATIONCOUNT}" -p bars -x "Test iteration" -y "Throughtput (ops/sec)" --series=${ITERATION} 
-done 
+#curl -o ${output_dir}/drawresults.py https://raw.githubusercontent.com/ekuric/openshift/master/postgresql/drawresults.py 
+#for load  in $(echo ${WORKLOAD} | sed -e s/,/" "/g); do
+#	python ${output_dir}/drawresults.py -r ${output_dir}/result_${load}_recordcount_${RECORDCOUNT}_operationcount_${OPERATIONCOUNT}.csv -i ff -o ${output_dir}/ycsb_${load}_recordcount_${RECORDCOUNT}_operationcount_${OPERATIONCOUNT} -t "${load} - recordcount=${RECORDCOUNT} operationcount=${OPERATIONCOUNT}" -p bars -x "Test iteration" -y "Throughtput (ops/sec)" --series=${ITERATION} 
+#done 
