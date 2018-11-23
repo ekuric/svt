@@ -28,7 +28,7 @@ echo "OPERATIONCOUNT: ${OPERATIONCOUNT}"
 
 for i in $(seq 1 ${ITERATION}); do 
 	ADMIN_PASS=$(oc -n ${NAMESPACE} exec $(oc get pod -n ${NAMESPACE} | grep mongodb | awk '{print $1}') -- scl enable rh-mongodb32 env |  env | grep MONGODB_ADMIN_PASSWORD | cut -d'=' -f2)
-	oc -n ${NAMESPACE} exec $(oc get pod -n ${NAMESPACE} | grep mongodb | awk '{print $1}') -- scl enable rh-mongodb32 -- mongo testdb -p ${ADMIN_PASS} -u admin --authenticationDatabase "admin" --eval "db.dropDatabase()" 
+	oc -n ${NAMESPACE} exec $(oc get pod -n ${NAMESPACE} | grep mongodb | awk '{print $1}') -- scl enable rh-mongodb32 -- mongo testdb -p "${ADMIN_PASS}" -u admin --authenticationDatabase "admin" --eval "db.dropDatabase()" 
 	for load  in $(echo ${WORKLOAD} | sed -e s/,/" "/g); do 
 		for thread in $(echo ${THREADS} | sed -e s/,/" "/g); do 
 			oc -n ${NAMESPACE} exec $(oc get pod -n ${NAMESPACE} | grep ycsb | awk '{print $1}') -- ./bin/ycsb load mongodb -s -threads $thread -P "workloads/${load}" -p mongodb.url=mongodb://redhat:redhat@${MONGODB_IP}:27017/testdb -p recordcount=${RECORDCOUNT} -p operationcount=${OPERATIONCOUNT} 2>&1 | tee -a ${output_dir}/mongodb_load_data_${load}_threads_${thread}.txt
