@@ -27,7 +27,7 @@ echo "OPERATIONCOUNT: ${OPERATIONCOUNT}"
 # load phase 
 
 for i in $(seq 1 ${ITERATION}); do 
-	ADMIN_PASS=$(oc -n ${NAMESPACE} exec $(oc get pod -n ${NAMESPACE} | grep mongodb | awk '{print $1}') -- scl enable rh-mongodb32 env |  env | grep MONGODB_ADMIN_PASSWORD | cut -d'=' -f2)
+	ADMIN_PASS=$(oc -n ${NAMESPACE} exec $(oc get pod -n ${NAMESPACE} | grep mongodb | awk '{print $1}') -- scl enable rh-mongodb32 -- env |  env | grep MONGODB_ADMIN_PASSWORD | cut -d'=' -f2)
 	oc -n ${NAMESPACE} exec $(oc get pod -n ${NAMESPACE} | grep mongodb | awk '{print $1}') -- scl enable rh-mongodb32 -- mongo testdb -p "${ADMIN_PASS}" -u admin --authenticationDatabase "admin" --eval "db.dropDatabase()" 
 	for load  in $(echo ${WORKLOAD} | sed -e s/,/" "/g); do 
 		for thread in $(echo ${THREADS} | sed -e s/,/" "/g); do 
