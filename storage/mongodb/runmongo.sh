@@ -9,10 +9,10 @@ RECORDCOUNT="${6}"
 OPERATIONCOUNT="${7}"
 STORAGECLASS="${8}"
 VOLUMECAPACITY="${9}"
-PBENCHCONFIG="${10}"
-
+DISTRIBUTION="${10}"
+PBENCHCONFIG="${11}"
 
 for memory_limit in $(echo ${MEMORY_LIMIT} | sed -e s/,/" "/g); do
 	ansible-playbook -i "${JUMP_HOST}," mongodb-test.yaml --extra-vars "MEMORY_LIMIT=${memory_limit}Mi ycsb_threads=${ycsb_threads} workload=${WORKLOAD} iteration=${ITERATIONS} \
-	recordcount=${RECORDCOUNT} operationcount=${OPERATIONCOUNT} STORAGE_CLASS_NAME=${STORAGECLASS} VOLUME_CAPACITY=${VOLUMECAPACITY}Gi PBENCHCONFIG=${PBENCHCONFIG}"
+	recordcount=${RECORDCOUNT} operationcount=${OPERATIONCOUNT} STORAGE_CLASS_NAME=${STORAGECLASS} VOLUME_CAPACITY=${VOLUMECAPACITY}Gi distribution=${DISTRIBUTION} PBENCHCONFIG=${PBENCHCONFIG}"
 done 

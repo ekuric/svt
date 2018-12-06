@@ -122,7 +122,7 @@
       - run
 
   - name: run the benchmarks
-    command: pbench-user-benchmark --sysinfo=none --config="mongodb_storage_test_{{ STORAGE_CLASS_NAME }}_{{ workload }}_{{ MEMORY_LIMIT }}_recordcount_{{ recordcount }}_operationcount_{{ operationcount }}_{{ PBENCHCONFIG }}" -- "{{ tmp_folder }}/files/scripts/test-mongo.sh" "{{ test_project_name }}" "{{ iteration }}" "{{ ycsb_threads }}" "{{ workload }}" "{{ recordcount }}" "{{ operationcount }}" 
+    command: pbench-user-benchmark --sysinfo=none --config="mongodb_storage_test_{{ STORAGE_CLASS_NAME }}_{{ workload }}_{{ MEMORY_LIMIT }}_distribution_{{ distribution }}_recordcount_{{ recordcount }}_operationcount_{{ operationcount }}_{{ PBENCHCONFIG }}" -- "{{ tmp_folder }}/files/scripts/test-mongo.sh" "{{ test_project_name }}" "{{ iteration }}" "{{ ycsb_threads }}" "{{ workload }}" "{{ recordcount }}" "{{ operationcount }}" "{{ distribution }}"
     tags:
       - run
 

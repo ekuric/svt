@@ -16,3 +16,4 @@ ycsb_threads: 16
 workload: workloada,workloadb,workloadc,workloadd,workloade,workloadf,workload_template
 recordcount: 1000       
 operationcount: 1000
+distribution: uniform 
