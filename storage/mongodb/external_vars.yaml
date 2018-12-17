@@ -1,6 +1,6 @@
 ---
 test_project_name: storage-test-mongo
-delete_test_project_before_test: true
+delete_test_project_before_test: false
 tmp_folder: /tmp/mongodb-test
 MEMORY_LIMIT: 4096Mi
 MONGODB_USER: redhat
