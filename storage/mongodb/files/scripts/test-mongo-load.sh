@@ -47,15 +47,10 @@ for i in $(seq 1 ${ITERATION}); do
 			# todo - fix case when loads are as workloada,workloadb ... 
 			oc -n ${NAMESPACE} exec $(oc get pod -n ${NAMESPACE} | grep mongodb | awk '{print $1}') -- scl enable rh-mongodb32 -- mongo --eval  "db.stats(1024*1024*1024)" 127.0.0.1:27017/testdb -p redhat -u redhat > ${output_dir}/mongodb_data_size_before_test/mongodb_data_size_${load}_${NAMESPACE}.txt
 
-			oc -n ${NAMESPACE} exec $(oc get pod -n ${NAMESPACE} | grep ycsb | awk '{print $1}') -- ./bin/ycsb load mongodb -s -threads $thread -P "workloads/${load}" -p mongodb.url=mongodb://redhat:redhat@${MONGODB_IP}:27017/testdb -p recordcount=${RECORDCOUNT} -p operationcount=${OPERATIONCOUNT} -p requestdistribution=${DISTRIBUTION} 2>&1 | tee -a ${output_dir}/load_data/mongodb_load_data_${NAMESPACE}_${load}_threads_${thread}.txt
+			oc -n ${NAMESPACE} exec $(oc get pod -n ${NAMESPACE} | grep ycsb | awk '{print $1}') -- ./bin/ycsb load mongodb -s -threads $thread -P "workloads/${load}" -p mongodb.url=mongodb://redhat:redhat@${MONGODB_IP}:27017/testdb -p recordcount=${RECORDCOUNT} -p operationcount=${OPERATIONCOUNT} -p requestdistribution=${DISTRIBUTION} -p mongodb.writeConcern=strict 2>&1 | tee -a ${output_dir}/load_data/mongodb_load_data_${NAMESPACE}_${load}_threads_${thread}.txt
 
 		# get db size after load step 
 			oc -n ${NAMESPACE} exec $(oc get pod -n ${NAMESPACE} | grep mongodb | awk '{print $1}') -- scl enable rh-mongodb32 -- mongo --eval  "db.stats(1024*1024*1024)" 127.0.0.1:27017/testdb -p redhat -u redhat > ${output_dir}/mongodb_data_size/mongodb_data_size_${load}_${NAMESPACE}.txt
-
-			oc -n ${NAMESPACE} exec $(oc get pod -n ${NAMESPACE} | grep ycsb | awk '{print $1}') -- ./bin/ycsb run mongodb -s -threads $thread -P "workloads/${load}" -p mongodb.url=mongodb://redhat:redhat@${MONGODB_IP}:27017/testdb 2>&1 -p recordcount=${RECORDCOUNT} -p operationcount=${OPERATIONCOUNT} -p requestdistribution=${DISTRIBUTION} -p mongodb.upsert=true | tee -a ${output_dir}/mongodb_run_test/mongodb_run_load_${NAMESPACE}_${load}_threads_${thread}.txt
-
-			# test finished ... get logs for mongodb pod 
-			oc -n ${NAMESPACE} logs $(oc get pod -n ${NAMESPACE} | grep mongodb | awk '{print $1}') > ${output_dir}/mongodb_pods_logs/mongodb_logs_${NAMESPACE}.txt 
 		done 
    	done 
 done
@@ -66,35 +61,24 @@ for load  in $(echo ${WORKLOAD} | sed -e s/,/" "/g); do
 	for thread in $(echo ${THREADS} | sed -e s/,/" "/g); do
 
 		echo "Throughput" > ${output_dir}/result_${load}_threads_${thread}.txt 
-		grep Throughput ${output_dir}/mongodb_run_test/mongodb_*  | cut -d',' -f3 | cut -d' ' -f2 >> ${output_dir}/result_${load}_threads_${thread}.txt
+		grep "Throughput" ${output_dir}/load_data/mongodb_*  | cut -d',' -f3 | cut -d' ' -f2 >> ${output_dir}/result_${load}_threads_${thread}.txt
 
 	        
-                # read 	
-		echo "READ-95thPercentileLatency" > ${output_dir}/result_${load}_read95lat_${thread}.txt 
-		grep "\[READ\]\, 95thPercentileLatency" ${output_dir}/mongodb_run_test/mongodb_* | cut -d',' -f3 | cut -d' ' -f2 >> ${output_dir}/result_${load}_read95lat_${thread}.txt
+                # insert 
+		echo "INSERT-95thPercentileLatency" > ${output_dir}/result_${load}_insert95lat_${thread}.txt 
+		grep "\[INSERT\]\, 95thPercentileLatency" ${output_dir}/load_data/mongodb_* | cut -d',' -f3 | cut -d' ' -f2 >> ${output_dir}/result_${load}_insert95lat_${thread}.txt
 
 		
-		echo "READ-99thPercentileLatency" > ${output_dir}/result_${load}_read99lat_${thread}.txt      
-		grep "\[READ\]\, 99thPercentileLatency" ${output_dir}/mongodb_run_test/mongodb_* | cut -d',' -f3 | cut -d' ' -f2 >> ${output_dir}/result_${load}_read99lat_${thread}.txt
-
-		# update 
-
-		echo "UPDATE-95thPercentileLatency" > ${output_dir}/result_${load}_update95lat_${thread}.txt
-                grep "\[UPDATE\]\, 95thPercentileLatency" ${output_dir}/mongodb_run_test/mongodb_* | cut -d',' -f3 | cut -d' ' -f2 >> ${output_dir}/result_${load}_update95lat_${thread}.txt
-                echo "UPDATE-99thPercentileLatency" > ${output_dir}/result_${load}_update99lat_${thread}.txt
-                grep "\[UPDATE\]\, 99thPercentileLatency" ${output_dir}/mongodb_run_test/mongodb_* | cut -d',' -f3 | cut -d' ' -f2 >> ${output_dir}/result_${load}_update99lat_${thread}.txt
-
+		echo "INSERT-99thPercentileLatency" > ${output_dir}/result_${load}_insert99lat_${thread}.txt      
+		grep "\[INSERT\]\, 99thPercentileLatency" ${output_dir}/load_data/mongodb_* | cut -d',' -f3 | cut -d' ' -f2 >> ${output_dir}/result_${load}_insert99lat_${thread}.txt
 
 	done
 	paste -d',' ${output_dir}/result_${load}_threads_* > ${output_dir}/result_${load}_recordcount_${RECORDCOUNT}_operationcount_${OPERATIONCOUNT}.csv
 	
-	paste -d',' ${output_dir}/result_${load}_read95lat_* > ${output_dir}/result_${load}_recordcount_${RECORDCOUNT}_operationcount_${OPERATIONCOUNT}_read95lat.csv
-        paste -d',' ${output_dir}/result_${load}_read99lat_* > ${output_dir}/result_${load}_recordcount_${RECORDCOUNT}_operationcount_${OPERATIONCOUNT}_read99lat.csv
+	paste -d',' ${output_dir}/result_${load}_insert95lat_* > ${output_dir}/result_${load}_recordcount_${RECORDCOUNT}_operationcount_${OPERATIONCOUNT}_insert95lat.csv
+        paste -d',' ${output_dir}/result_${load}_insert99lat_* > ${output_dir}/result_${load}_recordcount_${RECORDCOUNT}_operationcount_${OPERATIONCOUNT}_insert99lat.csv
 	
-	paste -d',' ${output_dir}/result_${load}_update95lat_* > ${output_dir}/result_${load}_recordcount_${RECORDCOUNT}_operationcount_${OPERATIONCOUNT}_update95lat.csv
-        paste -d',' ${output_dir}/result_${load}_update99lat_* > ${output_dir}/result_${load}_recordcount_${RECORDCOUNT}_operationcount_${OPERATIONCOUNT}_update99lat.csv
-
-	paste -d',' ${output_dir}/*.csv > ${output_dir}/Throughput_lat_${load}.csv
+	paste -d',' ${output_dir}/*.csv > ${output_dir}/Throughput_Load_lat_${load}.csv
 
 done 
 

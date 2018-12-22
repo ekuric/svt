@@ -36,23 +36,12 @@ mkdir -p ${output_dir}/mongodb_pods_logs
 # load phase 
 
 for i in $(seq 1 ${ITERATION}); do 
-	ADMIN_PASS=$(oc -n ${NAMESPACE} exec $(oc get pod -n ${NAMESPACE} | grep mongodb | awk '{print $1}') -- scl enable rh-mongodb32 -- env | grep MONGODB_ADMIN_PASSWORD | cut -d'=' -f2)
-	oc -n ${NAMESPACE} exec $(oc get pod -n ${NAMESPACE} | grep mongodb | awk '{print $1}') -- scl enable rh-mongodb32 -- mongo testdb -p "${ADMIN_PASS}" -u admin --authenticationDatabase "admin" --eval "db.dropDatabase()" 
-	echo "database dropped.... sleep 10s"
-	sleep 10 
 	for load  in $(echo ${WORKLOAD} | sed -e s/,/" "/g); do 
 		for thread in $(echo ${THREADS} | sed -e s/,/" "/g); do 
 			
-			# get data size prior load step 
-			# todo - fix case when loads are as workloada,workloadb ... 
-			oc -n ${NAMESPACE} exec $(oc get pod -n ${NAMESPACE} | grep mongodb | awk '{print $1}') -- scl enable rh-mongodb32 -- mongo --eval  "db.stats(1024*1024*1024)" 127.0.0.1:27017/testdb -p redhat -u redhat > ${output_dir}/mongodb_data_size_before_test/mongodb_data_size_${load}_${NAMESPACE}.txt
-
-			oc -n ${NAMESPACE} exec $(oc get pod -n ${NAMESPACE} | grep ycsb | awk '{print $1}') -- ./bin/ycsb load mongodb -s -threads $thread -P "workloads/${load}" -p mongodb.url=mongodb://redhat:redhat@${MONGODB_IP}:27017/testdb -p recordcount=${RECORDCOUNT} -p operationcount=${OPERATIONCOUNT} -p requestdistribution=${DISTRIBUTION} 2>&1 | tee -a ${output_dir}/load_data/mongodb_load_data_${NAMESPACE}_${load}_threads_${thread}.txt
-
-		# get db size after load step 
-			oc -n ${NAMESPACE} exec $(oc get pod -n ${NAMESPACE} | grep mongodb | awk '{print $1}') -- scl enable rh-mongodb32 -- mongo --eval  "db.stats(1024*1024*1024)" 127.0.0.1:27017/testdb -p redhat -u redhat > ${output_dir}/mongodb_data_size/mongodb_data_size_${load}_${NAMESPACE}.txt
-
-			oc -n ${NAMESPACE} exec $(oc get pod -n ${NAMESPACE} | grep ycsb | awk '{print $1}') -- ./bin/ycsb run mongodb -s -threads $thread -P "workloads/${load}" -p mongodb.url=mongodb://redhat:redhat@${MONGODB_IP}:27017/testdb 2>&1 -p recordcount=${RECORDCOUNT} -p operationcount=${OPERATIONCOUNT} -p requestdistribution=${DISTRIBUTION} -p mongodb.upsert=true | tee -a ${output_dir}/mongodb_run_test/mongodb_run_load_${NAMESPACE}_${load}_threads_${thread}.txt
+			# test run 
+			oc -n ${NAMESPACE} exec $(oc get pod -n ${NAMESPACE} | grep ycsb | awk '{print $1}') -- ./bin/ycsb run mongodb -s -threads $thread -P "workloads/${load}" -p mongodb.url=mongodb://redhat:redhat@${MONGODB_IP}:27017/testdb 2>&1 -p recordcount=${RECORDCOUNT} -p operationcount=${OPERATIONCOUNT} -p requestdistribution=${DISTRIBUTION} | tee -a ${output_dir}/mongodb_run_test/mongodb_run_load_${NAMESPACE}_${load}_threads_${thread}.txt
+			# -p mongodb.writeConcern=strict - tested 
 
 			# test finished ... get logs for mongodb pod 
 			oc -n ${NAMESPACE} logs $(oc get pod -n ${NAMESPACE} | grep mongodb | awk '{print $1}') > ${output_dir}/mongodb_pods_logs/mongodb_logs_${NAMESPACE}.txt 
@@ -66,7 +55,7 @@ for load  in $(echo ${WORKLOAD} | sed -e s/,/" "/g); do
 	for thread in $(echo ${THREADS} | sed -e s/,/" "/g); do
 
 		echo "Throughput" > ${output_dir}/result_${load}_threads_${thread}.txt 
-		grep Throughput ${output_dir}/mongodb_run_test/mongodb_*  | cut -d',' -f3 | cut -d' ' -f2 >> ${output_dir}/result_${load}_threads_${thread}.txt
+		grep "Throughput" ${output_dir}/mongodb_run_test/mongodb_*  | cut -d',' -f3 | cut -d' ' -f2 >> ${output_dir}/result_${load}_threads_${thread}.txt
 
 	        
                 # read 	
