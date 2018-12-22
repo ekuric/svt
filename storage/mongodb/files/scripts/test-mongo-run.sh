@@ -40,7 +40,7 @@ for i in $(seq 1 ${ITERATION}); do
 		for thread in $(echo ${THREADS} | sed -e s/,/" "/g); do 
 			
 			# test run 
-			oc -n ${NAMESPACE} exec $(oc get pod -n ${NAMESPACE} | grep ycsb | awk '{print $1}') -- ./bin/ycsb run mongodb -s -threads $thread -P "workloads/${load}" -p mongodb.url=mongodb://redhat:redhat@${MONGODB_IP}:27017/testdb 2>&1 -p recordcount=${RECORDCOUNT} -p operationcount=${OPERATIONCOUNT} -p requestdistribution=${DISTRIBUTION} -p writeallfields=true | tee -a ${output_dir}/mongodb_run_test/mongodb_run_load_${NAMESPACE}_${load}_threads_${thread}.csv	
+			oc -n ${NAMESPACE} exec $(oc get pod -n ${NAMESPACE} | grep ycsb | awk '{print $1}') -- ./bin/ycsb run mongodb -s -threads $thread -P "workloads/${load}" -p mongodb.url=mongodb://redhat:redhat@${MONGODB_IP}:27017/testdb 2>&1 -p recordcount=${RECORDCOUNT} -p operationcount=${OPERATIONCOUNT} -p requestdistribution=${DISTRIBUTION} -p mongodb.writeConcern=acknowledged -p wtimeout=10000 -p writeallfields=true | tee -a ${output_dir}/mongodb_run_test/mongodb_run_load_${NAMESPACE}_${load}_threads_${thread}.csv	
 			# -p mongodb.writeConcern=strict - tested 
 
 			# test finished ... get logs for mongodb pod 
