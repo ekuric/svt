@@ -60,27 +60,32 @@ done
 for load  in $(echo ${WORKLOAD} | sed -e s/,/" "/g); do
 	for thread in $(echo ${THREADS} | sed -e s/,/" "/g); do
 
-		echo "Throughput" > ${output_dir}/result_${load}_threads_${thread}.txt 
-		grep "Throughput" ${output_dir}/load_data/mongodb_*  | cut -d',' -f3 | cut -d' ' -f2 >> ${output_dir}/result_${load}_threads_${thread}.txt
+		echo "Throughput" > ${output_dir}/result_${load}_threads_${thread}.csv
+		grep "Throughput" ${output_dir}/load_data/mongodb_*  | cut -d',' -f3 | cut -d' ' -f2 >> ${output_dir}/result_${load}_threads_${thread}.csv 
 
 	        
                 # insert 
-		echo "INSERT-95thPercentileLatency" > ${output_dir}/result_${load}_insert95lat_${thread}.txt 
-		grep "\[INSERT\]\, 95thPercentileLatency" ${output_dir}/load_data/mongodb_* | cut -d',' -f3 | cut -d' ' -f2 >> ${output_dir}/result_${load}_insert95lat_${thread}.txt
-
+		echo "INSERT-95thPercentileLatency" > ${output_dir}/result_${load}_insert95lat_${thread}.csv 
+		grep "\[INSERT\]\, 95thPercentileLatency" ${output_dir}/load_data/mongodb_* | cut -d',' -f3 | cut -d' ' -f2 >> ${output_dir}/result_${load}_insert95lat_${thread}.csv
 		
-		echo "INSERT-99thPercentileLatency" > ${output_dir}/result_${load}_insert99lat_${thread}.txt      
-		grep "\[INSERT\]\, 99thPercentileLatency" ${output_dir}/load_data/mongodb_* | cut -d',' -f3 | cut -d' ' -f2 >> ${output_dir}/result_${load}_insert99lat_${thread}.txt
+		echo "INSERT-99thPercentileLatency" > ${output_dir}/result_${load}_insert99lat_${thread}.csv
+		grep "\[INSERT\]\, 99thPercentileLatency" ${output_dir}/load_data/mongodb_* | cut -d',' -f3 | cut -d' ' -f2 >> ${output_dir}/result_${load}_insert99lat_${thread}.csv
+		
+		echo "Runtime(ms)" > ${output_dir}/result_runtime_${load}_thread_${thread}.csv
+		grep "RunTime" ${output_dir}/load_data/mongodb_* | cut -d',' -f3 | cut -d' ' -f2 >> ${output_dir}/result_runtime_${load}_thread_${thread}.csv
 
 	done
-	paste -d',' ${output_dir}/result_${load}_threads_* > ${output_dir}/result_${load}_recordcount_${RECORDCOUNT}_operationcount_${OPERATIONCOUNT}.csv
-	
-	paste -d',' ${output_dir}/result_${load}_insert95lat_* > ${output_dir}/result_${load}_recordcount_${RECORDCOUNT}_operationcount_${OPERATIONCOUNT}_insert95lat.csv
-        paste -d',' ${output_dir}/result_${load}_insert99lat_* > ${output_dir}/result_${load}_recordcount_${RECORDCOUNT}_operationcount_${OPERATIONCOUNT}_insert99lat.csv
-	
-	paste -d',' ${output_dir}/*.csv > ${output_dir}/Throughput_Load_lat_${load}.csv
-
 done 
+
+for load  in $(echo ${WORKLOAD} | sed -e s/,/" "/g); do
+	for thread in $(echo ${THREADS} | sed -e s/,/" "/g); do
+		paste -d',' ${output_dir}/result_${load}_threads_${thread}.csv \
+			${output_dir}/result_runtime_${load}_thread_${thread}.csv \
+			${output_dir}/result_${load}_insert95lat_${thread}.csv \
+			${output_dir}/result_${load}_insert99lat_${thread}.csv  > ${output_dir}/Throughput_Load_lat_${load}_threads_${thread}.csv 
+	done 
+done 
+ 
 
 
 # draw result 
