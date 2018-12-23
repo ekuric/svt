@@ -82,7 +82,7 @@ do
   if [[ "${DELETE_EXISTING_PROJECTS}" == "true" ]];
   then
     MY_TIME=-1
-    wait_until_the_project_is_gone ${NAMESPACE} 180 10
+    wait_until_the_project_is_gone ${NAMESPACE} 600 10
     if (( ${MY_TIME} == -1 )); then
       echo "project ${NAMESPACE} is still there, time is up"
       exit 1
