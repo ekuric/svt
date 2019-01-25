@@ -85,13 +85,3 @@ for load  in $(echo ${WORKLOAD} | sed -e s/,/" "/g); do
 			${output_dir}/result_${load}_insert99lat_${thread}.csv  > ${output_dir}/Throughput_Load_lat_${load}_threads_${thread}.csv 
 	done 
 done 
- 
-
-
-# draw result 
-
-# get script 
-#curl -o ${output_dir}/drawresults.py https://raw.githubusercontent.com/ekuric/openshift/master/postgresql/drawresults.py 
-#for load  in $(echo ${WORKLOAD} | sed -e s/,/" "/g); do
-#	python ${output_dir}/drawresults.py -r ${output_dir}/result_${load}_recordcount_${RECORDCOUNT}_operationcount_${OPERATIONCOUNT}.csv -i ff -o ${output_dir}/ycsb_${load}_recordcount_${RECORDCOUNT}_operationcount_${OPERATIONCOUNT} -t "${load} - recordcount=${RECORDCOUNT} operationcount=${OPERATIONCOUNT}" -p bars -x "Test iteration" -y "Throughtput (ops/sec)" --series=${ITERATION} 
-#done 
