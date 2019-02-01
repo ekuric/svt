@@ -37,9 +37,9 @@ objects:
 - apiVersion: v1
   kind: Secret
   metadata:
-    name: ceph-secret-e
+    name: ceph-secret-ssd-e
   data:
-    key: QVFCeW9FZGNmQ3F4RmhBQUd3bDhpRXlWTWNVN0F6dlpJeWxHTHc9PQ== 
+    key: QVFERXoxQmNnQUdCT0JBQUEyb1luZ0FoMFRaQThMdFNmVUdpUkE9PQ== 
   type:
     kubernetes.io/rbd
 - apiVersion: v1
