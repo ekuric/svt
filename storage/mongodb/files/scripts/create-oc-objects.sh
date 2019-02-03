@@ -92,7 +92,7 @@ do
   fi
   #oc new-project ${NAMESPACE} --skip-config-write=true
   # temporary hack ... # todo -add node-selector as option 
-  oc adm new-project ${NAMESPACE} --node-selector="type=hdd-test"
+  oc adm new-project ${NAMESPACE} --node-selector="type=nvme-test"
   oc process -f ${TMP_FOLDER}/files/oc/mongodb-persistent-template.yaml \
       -p MEMORY_LIMIT=${MEMORY_LIMIT} -p MONGODB_USER=${MONGODB_USER} \
       -p MONGODB_PASSWORD=${MONGODB_PASSWORD} -p MONGODB_DATABASE=${MONGODB_DATABASE} \
