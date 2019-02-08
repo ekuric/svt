@@ -61,7 +61,7 @@ objects:
   metadata:
     name: ceph-secret-e
   data:
-    key: QVFBMXNncGNDZVZMQWhBQUl6bTFQUVRmWW55clR3QXFqNG1TdGc9PQ==  
+    key: QVFEb2xsQmNRQ1Y0SVJBQVF5V3dncU9qMVJyWFVMY3k3NisybWc9PQ==
   type:
     kubernetes.io/rbd
 - apiVersion: v1
