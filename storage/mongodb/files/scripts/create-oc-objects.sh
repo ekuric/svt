@@ -93,11 +93,11 @@ do
   #oc new-project ${NAMESPACE} --skip-config-write=true
   # temporary hack ... # todo -add node-selector as option 
   oc adm new-project ${NAMESPACE} --node-selector="type=nvme-test"
-  #oc process -f ${TMP_FOLDER}/files/oc/mongodb-persistent-template.yaml \
-  #    -p MEMORY_LIMIT=${MEMORY_LIMIT} -p MONGODB_USER=${MONGODB_USER} \
-  #    -p MONGODB_PASSWORD=${MONGODB_PASSWORD} -p MONGODB_DATABASE=${MONGODB_DATABASE} \
-  #    -p VOLUME_CAPACITY=${VOLUME_CAPACITY} -p MONGODB_VERSION=${MONGODB_VERSION} \
-  #    -p STORAGE_CLASS_NAME=${STORAGE_CLASS_NAME} | oc create --namespace=${NAMESPACE} -f -
+  oc process -f ${TMP_FOLDER}/files/oc/mongodb-persistent-template.yaml \
+      -p MEMORY_LIMIT=${MEMORY_LIMIT} -p MONGODB_USER=${MONGODB_USER} \
+      -p MONGODB_PASSWORD=${MONGODB_PASSWORD} -p MONGODB_DATABASE=${MONGODB_DATABASE} \
+      -p VOLUME_CAPACITY=${VOLUME_CAPACITY} -p MONGODB_VERSION=${MONGODB_VERSION} \
+      -p STORAGE_CLASS_NAME=${STORAGE_CLASS_NAME} | oc create --namespace=${NAMESPACE} -f -
   #MY_TIME=-1
   while [[ $(oc get pods -n ${NAMESPACE} | grep mongodb | grep -v deploy | awk '{print $2}') != "1/1" ]]; do 
 	  echo "Waitig on mongodb pod to start"
