@@ -82,7 +82,7 @@ do
   if [[ "${DELETE_EXISTING_PROJECTS}" == "true" ]];
   then
     MY_TIME=-1
-    wait_until_the_project_is_gone ${NAMESPACE} 600 10
+    wait_until_the_project_is_gone ${NAMESPACE} 1200 10
     if (( ${MY_TIME} == -1 )); then
       echo "project ${NAMESPACE} is still there, time is up"
       exit 1
@@ -90,38 +90,29 @@ do
       echo "it took ${MY_TIME} seconds to delete the project ${NAMESPACE}"
     fi
   fi
-  #oc new-project ${NAMESPACE} --skip-config-write=true
-  # temporary hack ... # todo -add node-selector as option 
-  oc adm new-project ${NAMESPACE} --node-selector="type=nvme-test"
+  # oc adm allows --node-selector - this is temporary change  
+  oc adm new-project ${NAMESPACE} --node-selector="type=nvme-test" #--node-selector="type=hdd-test"
   oc process -f ${TMP_FOLDER}/files/oc/mongodb-persistent-template.yaml \
       -p MEMORY_LIMIT=${MEMORY_LIMIT} -p MONGODB_USER=${MONGODB_USER} \
       -p MONGODB_PASSWORD=${MONGODB_PASSWORD} -p MONGODB_DATABASE=${MONGODB_DATABASE} \
       -p VOLUME_CAPACITY=${VOLUME_CAPACITY} -p MONGODB_VERSION=${MONGODB_VERSION} \
       -p STORAGE_CLASS_NAME=${STORAGE_CLASS_NAME} | oc create --namespace=${NAMESPACE} -f -
-  #MY_TIME=-1
-  while [[ $(oc get pods -n ${NAMESPACE} | grep mongodb | grep -v deploy | awk '{print $2}') != "1/1" ]]; do 
-	  echo "Waitig on mongodb pod to start"
-	  sleep 20
-  done 
-  #  wait_until_the_pod_is_ready ${NAMESPACE} mongodb 300 10
-  #if (( ${MY_TIME} == -1 )); then
-  #  echo "mongodb pod is not ready, time is up"
-  #  exit 1
-  #else
-  #  echo "it took ${MY_TIME} seconds to get mongodb pod ready"
-  #fi
+  MY_TIME=-1
+  wait_until_the_pod_is_ready ${NAMESPACE} mongodb 1800 10
+  if (( ${MY_TIME} == -1 )); then
+    echo "mongodb pod is not ready, time is up"
+    exit 1
+  else
+    echo "it took ${MY_TIME} seconds to get mongodb pod ready"
+  fi
   oc create  --namespace=${NAMESPACE} -f ${TMP_FOLDER}/files/oc/dc_ycsb.yaml
-  #MY_TIME=-1
-  while [[ $(oc get pods -n ${NAMESPACE} | grep ycsb | grep -v deploy | awk '{print $2}') != "1/1" ]]; do 
-	  echo "waiting on YCSB pod to start"
-	  sleep 20 
-  done 
-  #wait_until_the_pod_is_ready ${NAMESPACE} ycsb 300 10
-  #if (( ${MY_TIME} == -1 )); then
-  #  echo "ycsb pod is not ready, time is up"
-  #  exit 1
-  #else
-  #  echo "it took ${MY_TIME} seconds to get ycsb pod ready"
-  #fi
+  MY_TIME=-1
+  wait_until_the_pod_is_ready ${NAMESPACE} ycsb 1200 10
+  if (( ${MY_TIME} == -1 )); then
+    echo "ycsb pod is not ready, time is up"
+    exit 1
+  else
+    echo "it took ${MY_TIME} seconds to get ycsb pod ready"
+  fi
 done
 
