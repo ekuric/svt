@@ -91,7 +91,7 @@ do
     fi
   fi
   # oc adm allows --node-selector - this is temporary change  
-  oc adm new-project ${NAMESPACE} --node-selector="type=nvme-test" #--node-selector="type=hdd-test"
+  oc adm new-project ${NAMESPACE} --node-selector="type=hdd-test" #--node-selector="type=hdd-test"
   oc process -f ${TMP_FOLDER}/files/oc/mongodb-persistent-template.yaml \
       -p MEMORY_LIMIT=${MEMORY_LIMIT} -p MONGODB_USER=${MONGODB_USER} \
       -p MONGODB_PASSWORD=${MONGODB_PASSWORD} -p MONGODB_DATABASE=${MONGODB_DATABASE} \
