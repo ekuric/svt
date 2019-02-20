@@ -75,22 +75,40 @@ function wait_until_the_pod_is_ready {
   done
 }
 
+# let's first delete projects and then create new ones
+# 
+
+for i in $(seq 1 ${ITERATION}); do 
+	echo "we have to delete projects first...."
+	NAMESPACE="${NAMESPACE_BASENAME}-${i}"
+	if [[ "${DELETE_EXISTING_PROJECTS}" == "true" ]]; then 
+		MY_TIME=-1
+		wait_until_the_project_is_gone ${NAMESPACE} 1200 10
+		if (( ${MY_TIME} == -1 )); then
+			echo "project ${NAMESPACE} is still there, time is up"
+			exit 1
+		else
+			echo "it took ${MY_TIME} seconds to delete the project ${NAMESPACE}"
+		fi
+	fi 
+done 
+
 for i in $(seq 1 ${ITERATION});
 do
   echo "${i}..."
   NAMESPACE="${NAMESPACE_BASENAME}-${i}"
-  if [[ "${DELETE_EXISTING_PROJECTS}" == "true" ]];
-  then
-    MY_TIME=-1
-    wait_until_the_project_is_gone ${NAMESPACE} 1200 10
-    if (( ${MY_TIME} == -1 )); then
-      echo "project ${NAMESPACE} is still there, time is up"
-      exit 1
-    else
-      echo "it took ${MY_TIME} seconds to delete the project ${NAMESPACE}"
-    fi
-  fi
-  # oc adm allows --node-selector - this is temporary change  
+#  if [[ "${DELETE_EXISTING_PROJECTS}" == "true" ]];
+#  then
+#    MY_TIME=-1
+#    wait_until_the_project_is_gone ${NAMESPACE} 1200 10
+#    if (( ${MY_TIME} == -1 )); then
+#      echo "project ${NAMESPACE} is still there, time is up"
+#      exit 1
+#    else
+#      echo "it took ${MY_TIME} seconds to delete the project ${NAMESPACE}"
+#    fi
+#  fi
+#  oc adm allows --node-selector - this is temporary change  
   oc adm new-project ${NAMESPACE} --node-selector="type=hdd-test" #--node-selector="type=hdd-test"
   oc process -f ${TMP_FOLDER}/files/oc/mongodb-persistent-template.yaml \
       -p MEMORY_LIMIT=${MEMORY_LIMIT} -p MONGODB_USER=${MONGODB_USER} \
