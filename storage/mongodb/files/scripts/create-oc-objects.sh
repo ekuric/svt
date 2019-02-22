@@ -76,7 +76,7 @@ function wait_until_the_pod_is_ready {
 }
 
 # let's first delete projects and then create new ones
-# 
+# - This is due PLEG... :)
 
 for i in $(seq 1 ${ITERATION}); do 
 	echo "we have to delete projects first...."

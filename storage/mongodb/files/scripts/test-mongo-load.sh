@@ -47,8 +47,7 @@ for i in $(seq 1 ${ITERATION}); do
 			# todo - fix case when loads are as workloada,workloadb ... 
 			oc -n ${NAMESPACE} exec $(oc get pod -n ${NAMESPACE} | grep mongodb | awk '{print $1}') -- scl enable rh-mongodb32 -- mongo --eval  "db.stats(1024*1024*1024)" 127.0.0.1:27017/testdb -p redhat -u redhat > ${output_dir}/mongodb_data_size_before_test/mongodb_data_size_${load}_${NAMESPACE}.txt
 
-			oc -n ${NAMESPACE} exec $(oc get pod -n ${NAMESPACE} | grep ycsb | awk '{print $1}') -- ./bin/ycsb load mongodb -s -threads $thread -P "workloads/${load}" -p mongodb.url=mongodb://redhat:redhat@${MONGODB_IP}:27017/testdb -p recordcount=${RECORDCOUNT} -p operationcount=${OPERATIONCOUNT} -p requestdistribution=${DISTRIBUTION} -p mongodb.writeConcern=acknowledged -p wtimeout=10000 -p core_workload_insertion_retry_limit=5 -p core_workload_insertion_retry_interval=5 -p maxexecutiontime=28800 2>&1 | tee -a ${output_dir}/load_data/mongodb_load_data_${NAMESPACE}_${load}_threads_${thread}.txt
-
+			oc -n ${NAMESPACE} exec $(oc get pod -n ${NAMESPACE} | grep ycsb | awk '{print $1}') -- ./bin/ycsb load mongodb -s -threads $thread -P "workloads/${load}" -p mongodb.url=mongodb://redhat:redhat@${MONGODB_IP}:27017/testdb -p recordcount=${RECORDCOUNT} -p operationcount=${OPERATIONCOUNT} -p requestdistribution=${DISTRIBUTION} -p mongodb.writeConcern=acknowledged -p wtimeout=10000 -p core_workload_insertion_retry_limit=30 -p core_workload_insertion_retry_interval=10 -p maxexecutiontime=28800 2>&1 | tee -a ${output_dir}/load_data/mongodb_load_data_${NAMESPACE}_${load}_threads_${thread}.txt
 		# get db size after load step 
 			oc -n ${NAMESPACE} exec $(oc get pod -n ${NAMESPACE} | grep mongodb | awk '{print $1}') -- scl enable rh-mongodb32 -- mongo --eval  "db.stats(1024*1024*1024)" 127.0.0.1:27017/testdb -p redhat -u redhat > ${output_dir}/mongodb_data_size/mongodb_data_size_${load}_${NAMESPACE}.txt
 		done 
