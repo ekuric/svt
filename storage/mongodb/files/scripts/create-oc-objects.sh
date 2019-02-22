@@ -123,7 +123,8 @@ do
   else
     echo "it took ${MY_TIME} seconds to get mongodb pod ready"
   fi
-  oc create  --namespace=${NAMESPACE} -f ${TMP_FOLDER}/files/oc/dc_ycsb.yaml
+  oc create  --namespace=${NAMESPACE} -f ${TMP_FOLDER}/files/oc/ycsb_pod.yaml
+  #dc_ycsb.yaml
   MY_TIME=-1
   wait_until_the_pod_is_ready ${NAMESPACE} ycsb 1200 10
   if (( ${MY_TIME} == -1 )); then
