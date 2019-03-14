@@ -14,8 +14,8 @@ spec:
         capabilities: {}
         privileged: false
       terminationMessagePath: /dev/termination-log
-  dnsPolicy: ClusterFirst
-  restartPolicy: Always
+  dnsPolicy: None
+  restartPolicy: OnFailure
   nodeSelector: 
   serviceAccount: ""
 status: {}
