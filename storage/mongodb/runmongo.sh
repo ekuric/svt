@@ -15,5 +15,5 @@ PBENCHCONFIG="${12}"
 
 for memory_limit in $(echo ${MEMORY_LIMIT} | sed -e s/,/" "/g); do
 	ansible-playbook -i "${JUMP_HOST}," mongodb-test.yaml --extra-vars "MEMORY_LIMIT=${memory_limit}Mi ycsb_threads=${ycsb_threads} workload=${WORKLOAD} iteration=${ITERATIONS} \
-	recordcount=${RECORDCOUNT} operationcount=${OPERATIONCOUNT} STORAGE_CLASS_NAME=${STORAGECLASS} VOLUME_CAPACITY=${VOLUMECAPACITY}Gi distribution=${DISTRIBUTION} test_project_number=${PROJECTS} PBENCHCONFIG=${PBENCHCONFIG}"
+	recordcount=${RECORDCOUNT} operationcount=${OPERATIONCOUNT} STORAGE_CLASS_NAME=${STORAGECLASS} VOLUME_CAPACITY=${VOLUMECAPACITY}Gi distribution=${DISTRIBUTION} test_project_number=${PROJECTS} PBENCHCONFIG=${PBENCHCONFIG} ansible_ssh_user=root ansible_ssh_private_key_file=/root/.ssh/id_rsa_perf"
 done 
