@@ -37,9 +37,9 @@ objects:
 - apiVersion: v1
   kind: Secret
   metadata:
-    name: ceph-secret-ssd-e
+    name: ceph-secret-e
   data:
-    key: QVFERXoxQmNnQUdCT0JBQUEyb1luZ0FoMFRaQThMdFNmVUdpUkE9PQ== 
+    key: QVFDTFJZcGN5N2lZSlJBQWExYmFGblNjMXV3SkhtR2J6VW9NUXc9PQ==
   type:
     kubernetes.io/rbd
 - apiVersion: v1
@@ -56,14 +56,6 @@ objects:
     database-name: ${MONGODB_DATABASE}
     database-password: ${MONGODB_PASSWORD}
     database-user: ${MONGODB_USER}
-- apiVersion: v1
-  kind: Secret
-  metadata:
-    name: ceph-secret-e
-  data:
-    key: QVFEb2xsQmNRQ1Y0SVJBQVF5V3dncU9qMVJyWFVMY3k3NisybWc9PQ==
-  type:
-    kubernetes.io/rbd
 - apiVersion: v1
   kind: Service
   metadata:
