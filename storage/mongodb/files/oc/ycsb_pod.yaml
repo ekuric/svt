@@ -12,7 +12,7 @@ spec:
       resources: {}
       securityContext:
         capabilities: {}
-        privileged: false
+        privileged: true
       terminationMessagePath: /dev/termination-log
   dnsPolicy: Default
   restartPolicy: OnFailure

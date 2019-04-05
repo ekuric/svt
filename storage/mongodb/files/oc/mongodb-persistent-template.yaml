@@ -152,7 +152,7 @@ objects:
               memory: ${MEMORY_LIMIT}
           securityContext:
             capabilities: {}
-            privileged: false
+            privileged: true
           terminationMessagePath: /dev/termination-log
           volumeMounts:
           - mountPath: /var/lib/mongodb/data
