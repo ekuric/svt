@@ -3,20 +3,20 @@ projects:
     basename: fiotest
     tuning: default
     templates:
-      - num: 3
+      - num: 1000
         file: ./content/fio/fio-template.json
         parameters:
-          - STORAGE_CLASS: "storageclass" # this is name of storage class to use
-          - STORAGE_SIZE: "3Gi" # this is size of PVC mounted inside pod
+          - STORAGE_CLASS: "gp2" # this is name of storage class to use
+          - STORAGE_SIZE: "1Gi" # this is size of PVC mounted inside pod
           - MOUNT_PATH: "/mnt/pvcmount"
-          - DOCKER_IMAGE: "dockerimage"
+          - DOCKER_IMAGE: "quay.io/ekuric/smallfile"
           # other parameters
 
 tuningsets:
   - name: default
     templates:
       stepping:
-        stepsize: 5
+        stepsize: 1
         pause: 0 min
       rate_limit:
         delay: 0 ms
